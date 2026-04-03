@@ -8,7 +8,7 @@ import { byFailureReason, byPaymentMethod, byRegion, groupByDay, merchantPerform
 import { buildInsights } from '@/lib/insights';
 import { buildExecutiveBrief } from '@/lib/executive';
 import { FilterState } from '@/types/payments';
-import { FilterBar, KPIGrid, SectionHeader } from '@/components/dashboard/ui';
+import { FilterBar, FilterEmptyState, KPIGrid, SectionHeader } from '@/components/dashboard/ui';
 import { ExecutiveCard, InsightCard, SectionContainer, StatusBadge } from '@/components/dashboard/design-system';
 import {
   AlertsPanel,
@@ -39,13 +39,16 @@ import {
 } from '@/components/dashboard/sections';
 
 const cleanedOutput = cleanTransactions(rawTransactions);
+const allDates = cleanedOutput.cleaned.map((t) => t.transactionDate).sort();
+const minDate = allDates[0] ?? '2026-01-01';
+const maxDate = allDates[allDates.length - 1] ?? '2026-03-31';
 
 type TrendMode = 'volume' | 'success' | 'risk';
 
 export default function Page() {
   const [filters, setFilters] = useState<FilterState>({
-    startDate: '2026-01-01',
-    endDate: '2026-03-31',
+    startDate: minDate,
+    endDate: maxDate,
     region: 'All Regions',
     paymentMethod: 'All Methods',
     merchantSegment: 'All Segments',
@@ -125,7 +128,9 @@ export default function Page() {
   return (
     <main className="max-w-[1360px] mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-7">
       <HeroSection />
-      <FilterBar filters={filters} options={filterOptions} onChange={setFilters} />
+      <FilterBar filters={filters} options={filterOptions} onChange={setFilters} minDate={minDate} maxDate={maxDate} totalCount={cleanedOutput.cleaned.length} filteredCount={filtered.length} />
+
+      <FilterEmptyState filteredCount={filtered.length} />
 
       <SectionContainer>
         <SectionHeader title="Executive Briefing" subtitle="Leadership-oriented summary with explicit separation of observed facts, interpretation, and recommended next actions." />
