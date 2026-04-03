@@ -23,8 +23,6 @@ const paymentMap: Record<string, string> = {
 function parseDate(input: string | null | undefined, fallback?: string): string {
   if (!input || !input.trim()) return fallback ?? '2026-01-01';
   const raw = input.trim();
-  const direct = new Date(raw);
-  if (!Number.isNaN(direct.getTime())) return direct.toISOString().split('T')[0];
 
   const dmY = raw.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
   if (dmY) {
@@ -32,6 +30,16 @@ function parseDate(input: string | null | undefined, fallback?: string): string 
     const parsed = new Date(Number(y), Number(m) - 1, Number(d));
     if (!Number.isNaN(parsed.getTime())) return parsed.toISOString().split('T')[0];
   }
+
+  const mdY = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (mdY) {
+    const [, m, d, y] = mdY;
+    const parsed = new Date(Number(y), Number(m) - 1, Number(d));
+    if (!Number.isNaN(parsed.getTime())) return parsed.toISOString().split('T')[0];
+  }
+
+  const direct = new Date(raw);
+  if (!Number.isNaN(direct.getTime())) return direct.toISOString().split('T')[0];
 
   return fallback ?? '2026-01-01';
 }

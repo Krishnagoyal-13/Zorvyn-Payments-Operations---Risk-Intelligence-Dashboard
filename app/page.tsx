@@ -126,13 +126,16 @@ export default function Page() {
   const trendButtons: TrendMode[] = ['volume', 'success', 'risk'];
 
   return (
-    <main className="max-w-[1360px] mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-7">
+    <main className="max-w-[1600px] mx-auto px-4 md:px-6 py-6 md:py-8 space-y-5">
       <HeroSection />
-      <FilterBar filters={filters} options={filterOptions} onChange={setFilters} minDate={minDate} maxDate={maxDate} totalCount={cleanedOutput.cleaned.length} filteredCount={filtered.length} />
+      <div className="grid lg:grid-cols-[320px_minmax(0,1fr)] gap-4 items-start">
+        <aside className="lg:sticky top-4 space-y-3">
+          <FilterBar filters={filters} options={filterOptions} onChange={setFilters} minDate={minDate} maxDate={maxDate} totalCount={cleanedOutput.cleaned.length} filteredCount={filtered.length} />
+          <FilterEmptyState filteredCount={filtered.length} />
+        </aside>
 
-      <FilterEmptyState filteredCount={filtered.length} />
-
-      <SectionContainer>
+        <div className="space-y-6 md:space-y-7">
+          <SectionContainer>
         <SectionHeader title="Executive Briefing" subtitle="Leadership-oriented summary with explicit separation of observed facts, interpretation, and recommended next actions." />
         <div className="grid lg:grid-cols-3 gap-3">
           {executive.observations.map((item) => (
@@ -195,7 +198,7 @@ export default function Page() {
                   <button
                     key={mode}
                     onClick={() => setTrendMode(mode)}
-                    className={`px-2 py-1 rounded-md capitalize ${trendMode === mode ? 'bg-white shadow text-brand-700' : 'text-slate-600'}`}
+                    className={`px-2 py-1 rounded-md capitalize ${trendMode === mode ? 'bg-brand-900/40 border border-brand-600 text-brand-200' : 'text-slate-400'}`}
                   >
                     {mode}
                   </button>
@@ -229,7 +232,7 @@ export default function Page() {
             rightAction={
               <div className="flex gap-1 rounded-lg bg-slate-100 p-1 text-xs">
                 {(['count', 'amount'] as const).map((mode) => (
-                  <button key={mode} onClick={() => setPaymentView(mode)} className={`px-2 py-1 rounded-md ${paymentView === mode ? 'bg-white shadow text-brand-700' : 'text-slate-600'}`}>{mode}</button>
+                  <button key={mode} onClick={() => setPaymentView(mode)} className={`px-2 py-1 rounded-md ${paymentView === mode ? 'bg-brand-900/40 border border-brand-600 text-brand-200' : 'text-slate-400'}`}>{mode}</button>
                 ))}
               </div>
             }
@@ -337,15 +340,17 @@ export default function Page() {
         </div>
       </SectionContainer>
 
-      <SectionContainer>
-        <SectionHeader title="Methodology & Metric Definitions" subtitle="Transparent metric formulas used for this dashboard." />
-        <div className="grid md:grid-cols-2 gap-3 text-sm text-slate-700">
-          <p><strong>Success Rate</strong> = Successful transactions / Total transactions. <strong>Refund Rate</strong> = Refunded transactions / Total transactions.</p>
-          <p><strong>Average Settlement Time</strong> = Mean settlement delay days across filtered transactions.</p>
-          <p><strong>Merchant Health Score</strong> combines success, refund, and risk rates into a 0-100 composite.</p>
-          <p><strong>Net Revenue Impact</strong> = Sum(transaction amount - refund amount). <strong>WoW Change</strong> compares latest 7 days to prior 7 days.</p>
+          <SectionContainer>
+            <SectionHeader title="Methodology & Metric Definitions" subtitle="Transparent metric formulas used for this dashboard." />
+            <div className="grid md:grid-cols-2 gap-3 text-sm text-slate-700">
+              <p><strong>Success Rate</strong> = Successful transactions / Total transactions. <strong>Refund Rate</strong> = Refunded transactions / Total transactions.</p>
+              <p><strong>Average Settlement Time</strong> = Mean settlement delay days across filtered transactions.</p>
+              <p><strong>Merchant Health Score</strong> combines success, refund, and risk rates into a 0-100 composite.</p>
+              <p><strong>Net Revenue Impact</strong> = Sum(transaction amount - refund amount). <strong>WoW Change</strong> compares latest 7 days to prior 7 days.</p>
+            </div>
+          </SectionContainer>
         </div>
-      </SectionContainer>
+      </div>
     </main>
   );
 }

@@ -76,7 +76,7 @@ export function DataQualitySection({
       </div>
 
       <div className="grid lg:grid-cols-2 gap-4">
-        <div className="card p-4 space-y-3">
+        <div className="card p-4 space-y-3 bg-slate-900/65">
           <h3 className="text-sm font-semibold text-slate-800">Issue Register (Detected)</h3>
           <IssueRow title="Duplicate records" value={summary.duplicatesRemoved} severity="risk" definition="Same transaction_id encountered more than once." />
           <IssueRow title="Inconsistent labels" value={summary.labelsStandardized} severity="warning" definition="Region/payment method aliases mapped to governed labels." />
@@ -84,7 +84,7 @@ export function DataQualitySection({
           <IssueRow title="Potentially uncertain records" value={summary.recordsMarkedUncertain} severity="info" definition="Rows containing inferred or fallback values retained with caution." />
         </div>
 
-        <div className="card p-4 space-y-3">
+        <div className="card p-4 space-y-3 bg-slate-900/65">
           <h3 className="text-sm font-semibold text-slate-800">Cleaning Methodology (Applied)</h3>
           <MethodStep step="1" title="Standardization" description="Normalized region and payment method labels to canonical controlled vocabulary." />
           <MethodStep step="2" title="Normalization" description="Parsed mixed date formats and corrected invalid date strings using fallback rulebook." />
@@ -113,7 +113,7 @@ export function DataQualitySection({
 
 function GovernanceMetric({ label, value, tone, note }: { label: string; value: number; tone: 'success' | 'warning' | 'risk' | 'neutral' | 'info'; note: string }) {
   return (
-    <div className="rounded-xl border border-slate-200 p-3 bg-white">
+    <div className="rounded-xl border border-slate-700 p-3 bg-slate-900/60">
       <div className="flex items-center justify-between gap-2">
         <p className="text-[11px] uppercase tracking-wide text-slate-500">{label}</p>
         <StatusBadge tone={tone}>{tone}</StatusBadge>
@@ -126,7 +126,7 @@ function GovernanceMetric({ label, value, tone, note }: { label: string; value: 
 
 function IssueRow({ title, value, severity, definition }: { title: string; value: number; severity: 'success' | 'warning' | 'risk' | 'neutral' | 'info'; definition: string }) {
   return (
-    <div className="border border-slate-200 rounded-lg p-2.5">
+    <div className="border border-slate-700 rounded-lg p-2.5 bg-slate-900/50">
       <div className="flex items-center justify-between gap-2">
         <p className="text-sm font-medium text-slate-800">{title}</p>
         <div className="flex items-center gap-2"><StatusBadge tone={severity}>{severity}</StatusBadge><span className="text-sm font-semibold">{value}</span></div>
@@ -138,7 +138,7 @@ function IssueRow({ title, value, severity, definition }: { title: string; value
 
 function MethodStep({ step, title, description }: { step: string; title: string; description: string }) {
   return (
-    <div className="border border-slate-200 rounded-lg p-2.5">
+    <div className="border border-slate-700 rounded-lg p-2.5 bg-slate-900/50">
       <p className="text-xs uppercase tracking-wide text-slate-500">Step {step}</p>
       <p className="text-sm font-medium text-slate-800">{title}</p>
       <p className="text-xs text-slate-600 mt-1">{description}</p>

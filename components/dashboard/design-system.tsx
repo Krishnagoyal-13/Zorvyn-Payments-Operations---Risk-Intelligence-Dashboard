@@ -4,34 +4,34 @@ export type StatusTone = 'success' | 'warning' | 'risk' | 'neutral' | 'info';
 
 export const toneTokens: Record<StatusTone, { badge: string; subtleBg: string; text: string; border: string }> = {
   success: {
-    badge: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-    subtleBg: 'bg-emerald-50',
-    text: 'text-emerald-700',
-    border: 'border-emerald-200'
+    badge: 'border-emerald-700/60 bg-emerald-900/30 text-emerald-300',
+    subtleBg: 'bg-emerald-950/25',
+    text: 'text-emerald-300',
+    border: 'border-emerald-800/60'
   },
   warning: {
-    badge: 'border-amber-200 bg-amber-50 text-amber-700',
-    subtleBg: 'bg-amber-50',
-    text: 'text-amber-700',
-    border: 'border-amber-200'
+    badge: 'border-amber-700/60 bg-amber-900/25 text-amber-300',
+    subtleBg: 'bg-amber-950/25',
+    text: 'text-amber-300',
+    border: 'border-amber-800/60'
   },
   risk: {
-    badge: 'border-rose-200 bg-rose-50 text-rose-700',
-    subtleBg: 'bg-rose-50',
-    text: 'text-rose-700',
-    border: 'border-rose-200'
+    badge: 'border-rose-700/60 bg-rose-900/25 text-rose-300',
+    subtleBg: 'bg-rose-950/25',
+    text: 'text-rose-300',
+    border: 'border-rose-800/60'
   },
   neutral: {
-    badge: 'border-slate-200 bg-slate-100 text-slate-700',
-    subtleBg: 'bg-slate-100',
-    text: 'text-slate-700',
-    border: 'border-slate-200'
+    badge: 'border-slate-700/60 bg-slate-800/60 text-slate-300',
+    subtleBg: 'bg-slate-900/55',
+    text: 'text-slate-300',
+    border: 'border-slate-700/70'
   },
   info: {
-    badge: 'border-sky-200 bg-sky-50 text-sky-700',
-    subtleBg: 'bg-sky-50',
-    text: 'text-sky-700',
-    border: 'border-sky-200'
+    badge: 'border-sky-700/60 bg-sky-900/25 text-sky-300',
+    subtleBg: 'bg-sky-950/25',
+    text: 'text-sky-300',
+    border: 'border-sky-800/60'
   }
 };
 
@@ -59,7 +59,7 @@ export function InsightCard({
   return (
     <div className={`rounded-xl border p-4 ${toneTokens[tone].border} ${toneTokens[tone].subtleBg}`}>
       <h4 className={`text-sm font-semibold mb-1 ${toneTokens[tone].text}`}>{title}</h4>
-      <p className="text-xs text-slate-700 leading-relaxed">{children}</p>
+      <p className="text-xs text-slate-300 leading-relaxed">{children}</p>
     </div>
   );
 }
