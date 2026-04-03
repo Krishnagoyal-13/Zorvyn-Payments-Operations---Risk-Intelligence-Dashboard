@@ -129,7 +129,7 @@ export default function Page() {
     <main className="max-w-[1600px] mx-auto px-4 md:px-6 py-6 md:py-8 space-y-5">
       <HeroSection />
       <div className="grid lg:grid-cols-[320px_minmax(0,1fr)] gap-4 items-start">
-        <aside className="lg:sticky top-4 space-y-3">
+        <aside className="lg:sticky top-4 lg:h-[calc(100vh-2rem)] lg:overflow-y-auto space-y-3 pr-1">
           <FilterBar filters={filters} options={filterOptions} onChange={setFilters} minDate={minDate} maxDate={maxDate} totalCount={cleanedOutput.cleaned.length} filteredCount={filtered.length} />
           <FilterEmptyState filteredCount={filtered.length} />
         </aside>

@@ -24,8 +24,8 @@ export function SectionHeader({ title, subtitle }: { title: string; subtitle?: s
 
 function FilterField({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <label className="flex flex-col gap-1 min-w-[160px]">
-      <span className="text-[11px] uppercase tracking-wide text-slate-400">{label}</span>
+    <label className="flex flex-col gap-1">
+      <span className="text-[11px] uppercase tracking-wide text-slate-400 whitespace-nowrap">{label}</span>
       {children}
     </label>
   );
@@ -103,7 +103,7 @@ export function FilterBar({
         ))}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-1 gap-3">
         <FilterField label="Start Date">
           <input className={filterSelectClass(filters.startDate !== minDate)} type="date" value={filters.startDate} min={minDate} max={filters.endDate} onChange={(e) => set('startDate', e.target.value)} />
         </FilterField>
