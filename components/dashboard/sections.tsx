@@ -5,10 +5,14 @@ import { CleaningSummary, CleanTransaction, MerchantStats, RawTransaction } from
 import { formatCurrency } from '@/lib/aggregations';
 import { SectionHeader } from './ui';
 import {
+  Area,
+  AreaChart,
   Bar,
   BarChart,
+  Brush,
   CartesianGrid,
   Cell,
+  ComposedChart,
   Legend,
   Line,
   LineChart,
@@ -22,12 +26,13 @@ import {
 
 export function HeroSection() {
   return (
-    <section className="card p-6 md:p-8">
-      <p className="text-xs uppercase tracking-[0.14em] font-semibold text-brand-700">Portfolio Case Study · Fintech Analytics</p>
-      <h1 className="text-3xl md:text-4xl font-semibold tracking-tight mt-3">Zorvyn Payments Operations & Risk Intelligence Dashboard</h1>
-      <p className="mt-3 text-sm md:text-base text-slate-600 max-w-4xl leading-relaxed">
-        This simulation demonstrates how a data analyst intern can convert messy payment operations data into governed KPI reporting,
-        risk intelligence, and action-ready recommendations for leadership.
+    <section className="card p-6 md:p-8 relative overflow-hidden">
+      <div className="absolute -top-12 -right-12 h-36 w-36 rounded-full bg-brand-100/60 blur-2xl" />
+      <p className="relative text-xs uppercase tracking-[0.18em] font-semibold text-brand-700">Portfolio Case Study · Fintech Analytics</p>
+      <h1 className="relative text-3xl md:text-4xl font-semibold tracking-tight mt-3">Zorvyn Payments Operations & Risk Intelligence Dashboard</h1>
+      <p className="relative mt-3 text-sm md:text-base text-slate-600 max-w-4xl leading-relaxed">
+        A high-fidelity simulation of how a payments analyst transforms noisy operational data into trusted metrics, intelligent anomaly signals,
+        and executive-ready recommendations.
       </p>
     </section>
   );
@@ -44,7 +49,7 @@ export function DataQualitySection({
 }) {
   return (
     <section className="section-card">
-      <SectionHeader title="Data Quality" subtitle="Raw ingestion defects, cleanup interventions, and trusted output sample." />
+      <SectionHeader title="Data Quality" subtitle="Data trust layer: defects detected, normalized, and validated for decision-ready reporting." />
       <div className="grid md:grid-cols-3 gap-3 mb-5">
         {[
           ['Duplicates Found', summary.duplicatesRemoved],
@@ -61,50 +66,68 @@ export function DataQualitySection({
         ))}
       </div>
       <div className="grid lg:grid-cols-2 gap-4 text-xs">
-        <div className="overflow-auto border border-slate-200 rounded-xl">
-          <table className="w-full">
-            <thead className="bg-slate-100 sticky top-0">
-              <tr><th className="p-2.5 text-left">Raw Transaction Sample</th><th className="p-2.5 text-left">Date</th><th className="p-2.5">Region</th><th className="p-2.5">Method</th></tr>
-            </thead>
-            <tbody>
-              {rawSample.map((r) => (
-                <tr key={r.transaction_id} className="border-t border-slate-200">
-                  <td className="p-2.5">{r.transaction_id}</td>
-                  <td className="p-2.5">{r.transaction_date}</td>
-                  <td className="p-2.5">{r.region}</td>
-                  <td className="p-2.5">{r.payment_method}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="overflow-auto border border-slate-200 rounded-xl">
-          <table className="w-full">
-            <thead className="bg-slate-100 sticky top-0">
-              <tr><th className="p-2.5 text-left">Cleaned Sample</th><th className="p-2.5 text-left">Date</th><th className="p-2.5">Region</th><th className="p-2.5">Method</th></tr>
-            </thead>
-            <tbody>
-              {cleanedSample.map((r) => (
-                <tr key={r.transactionId} className="border-t border-slate-200">
-                  <td className="p-2.5">{r.transactionId}</td>
-                  <td className="p-2.5">{r.transactionDate}</td>
-                  <td className="p-2.5">{r.region}</td>
-                  <td className="p-2.5">{r.paymentMethod}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable title="Raw Transaction Sample" rows={rawSample.map((r) => [r.transaction_id, r.transaction_date, r.region, r.payment_method])} />
+        <DataTable title="Cleaned Transaction Sample" rows={cleanedSample.map((r) => [r.transactionId, r.transactionDate, r.region, r.paymentMethod])} />
       </div>
     </section>
   );
 }
 
-export function ChartCard({ title, children }: { title: string; children: ReactNode }) {
+function DataTable({ title, rows }: { title: string; rows: string[][] }) {
   return (
-    <div className="card p-4 md:p-5 h-[330px]">
-      <h3 className="font-semibold text-sm text-slate-800 mb-3">{title}</h3>
-      <div className="h-[260px]">{children}</div>
+    <div className="overflow-auto border border-slate-200 rounded-xl">
+      <table className="w-full">
+        <thead className="bg-slate-100 sticky top-0">
+          <tr><th className="p-2.5 text-left">{title}</th><th className="p-2.5 text-left">Date</th><th className="p-2.5">Region</th><th className="p-2.5">Method</th></tr>
+        </thead>
+        <tbody>
+          {rows.map((r) => (
+            <tr key={r.join('|')} className="border-t border-slate-200">
+              <td className="p-2.5">{r[0]}</td>
+              <td className="p-2.5">{r[1]}</td>
+              <td className="p-2.5">{r[2]}</td>
+              <td className="p-2.5">{r[3]}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export function ChartCard({
+  title,
+  subtitle,
+  rightAction,
+  children
+}: {
+  title: string;
+  subtitle?: string;
+  rightAction?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <div className="card p-4 md:p-5 h-[340px]">
+      <div className="flex items-start justify-between gap-2 mb-3">
+        <div>
+          <h3 className="font-semibold text-sm text-slate-900">{title}</h3>
+          {subtitle ? <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p> : null}
+        </div>
+        {rightAction}
+      </div>
+      <div className="h-[262px]">{children}</div>
+    </div>
+  );
+}
+
+export function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string }>; label?: string }) {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white/95 shadow-md px-3 py-2 text-xs">
+      <p className="font-semibold text-slate-700 mb-1">{label}</p>
+      {payload.map((p) => (
+        <p key={p.name} style={{ color: p.color }}>{p.name}: {typeof p.value === 'number' ? p.value.toLocaleString() : p.value}</p>
+      ))}
     </div>
   );
 }
@@ -189,5 +212,9 @@ export {
   Bar,
   PieChart,
   Pie,
-  Cell
+  Cell,
+  AreaChart,
+  Area,
+  Brush,
+  ComposedChart
 };
