@@ -99,35 +99,56 @@ export function ChartCard({
   title,
   subtitle,
   rightAction,
+  whyItMatters,
   children
 }: {
   title: string;
   subtitle?: string;
   rightAction?: ReactNode;
+  whyItMatters?: string;
   children: ReactNode;
 }) {
   return (
-    <div className="card p-4 md:p-5 h-[340px]">
-      <div className="flex items-start justify-between gap-2 mb-3">
+    <div className="card p-4 md:p-5 h-[372px] flex flex-col">
+      <div className="flex items-start justify-between gap-2 mb-2">
         <div>
           <h3 className="font-semibold text-sm text-slate-900">{title}</h3>
           {subtitle ? <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p> : null}
         </div>
         {rightAction}
       </div>
-      <div className="h-[262px]">{children}</div>
+      <div className="h-[248px]">
+        {children}
+      </div>
+      {whyItMatters ? (
+        <p className="mt-2 text-[11px] leading-relaxed text-slate-600 border-t border-slate-100 pt-2">
+          <span className="font-semibold text-slate-700">Why it matters:</span> {whyItMatters}
+        </p>
+      ) : null}
     </div>
   );
 }
 
+const pretty = (value: number) => {
+  if (Math.abs(value) >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}M`;
+  if (Math.abs(value) >= 1_000) return `${(value / 1_000).toFixed(1)}K`;
+  return value.toLocaleString();
+};
+
 export function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ name: string; value: number; color: string }>; label?: string }) {
   if (!active || !payload?.length) return null;
+
   return (
-    <div className="rounded-lg border border-slate-200 bg-white/95 shadow-md px-3 py-2 text-xs">
+    <div className="rounded-lg border border-slate-200 bg-white/95 shadow-md px-3 py-2 text-xs min-w-[140px]">
       <p className="font-semibold text-slate-700 mb-1">{label}</p>
-      {payload.map((p) => (
-        <p key={p.name} style={{ color: p.color }}>{p.name}: {typeof p.value === 'number' ? p.value.toLocaleString() : p.value}</p>
-      ))}
+      <div className="space-y-1">
+        {payload.map((p) => (
+          <p key={p.name} className="flex justify-between gap-3" style={{ color: p.color }}>
+            <span className="text-slate-600">{p.name}</span>
+            <span className="font-medium text-slate-900">{pretty(Number(p.value ?? 0))}</span>
+          </p>
+        ))}
+      </div>
     </div>
   );
 }

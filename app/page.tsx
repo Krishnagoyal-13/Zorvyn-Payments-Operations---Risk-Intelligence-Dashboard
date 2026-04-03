@@ -132,11 +132,12 @@ export default function Page() {
       </section>
 
       <section className="section-shell">
-        <SectionHeader title="Transaction Performance" subtitle="Interactive command center for payment throughput, conversion quality, and regional behavior." />
+        <SectionHeader title="Transaction Performance" subtitle="What is happening across volume and conversion, and where intervention should focus first." />
         <div className="grid lg:grid-cols-2 gap-3 md:gap-4">
           <ChartCard
-            title="Daily Transaction Intelligence"
-            subtitle="Toggle the primary signal"
+            title="Daily Transaction Signal"
+            subtitle="Volume, success, or risk signal over time"
+            whyItMatters="Trend inflections here are the earliest sign of conversion shifts, risk surges, or demand slowdown."
             rightAction={
               <div className="flex gap-1 rounded-lg bg-slate-100 p-1 text-xs">
                 {trendButtons.map((mode) => (
@@ -160,20 +161,20 @@ export default function Page() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis dataKey="date" hide />
-                <YAxis />
+                <XAxis dataKey="date" tick={{ fontSize: 10 }} tickMargin={8} />
+                <YAxis tick={{ fontSize: 11 }} width={42} />
                 <Tooltip content={<CustomTooltip />} />
                 <Area dataKey={trendMode === 'volume' ? 'volume' : trendMode === 'success' ? 'success' : 'flagged'} stroke={chartTheme.primary} fill="url(#trendGradient)" strokeWidth={2} />
                 <Brush dataKey="date" height={20} stroke="#94a3b8" />
               </AreaChart>
             </ResponsiveContainer>
           </ChartCard>
-          <ChartCard title="Success vs Failure (Stacked)" subtitle="Outcome mix by day">
-            <ResponsiveContainer><BarChart data={daily}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="date" hide /><YAxis /><Tooltip content={<CustomTooltip />} /><Legend /><Bar dataKey="success" stackId="a" fill={chartTheme.success} radius={[6, 6, 0, 0]} /><Bar dataKey="failed" stackId="a" fill={chartTheme.failed} radius={[6, 6, 0, 0]} /></BarChart></ResponsiveContainer>
+          <ChartCard title="Outcome Mix by Day" subtitle="Successful vs failed transactions" whyItMatters="A widening failure share is typically a conversion and revenue leak that should be triaged immediately.">
+            <ResponsiveContainer><BarChart data={daily}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="date" hide /><YAxis tick={{ fontSize: 11 }} width={42} /><Tooltip content={<CustomTooltip />} /><Legend verticalAlign="top" height={24} wrapperStyle={{ fontSize: 11 }} /><Bar dataKey="success" stackId="a" fill={chartTheme.success} radius={[6, 6, 0, 0]} /><Bar dataKey="failed" stackId="a" fill={chartTheme.failed} radius={[6, 6, 0, 0]} /></BarChart></ResponsiveContainer>
           </ChartCard>
           <ChartCard
-            title="Payment Method Comparison"
-            subtitle="Switch between transaction count and gross amount"
+            title="Payment Method Performance"
+            subtitle="Compare throughput and amount by payment rail"
             rightAction={
               <div className="flex gap-1 rounded-lg bg-slate-100 p-1 text-xs">
                 {(['count', 'amount'] as const).map((mode) => (
@@ -182,27 +183,27 @@ export default function Page() {
               </div>
             }
           >
-            <ResponsiveContainer><ComposedChart data={methods}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="method" /><YAxis /><Tooltip content={<CustomTooltip />} /><Bar dataKey={paymentView === 'count' ? 'count' : 'amount'} fill={chartTheme.primary} radius={[8, 8, 0, 0]} /></ComposedChart></ResponsiveContainer>
+            <ResponsiveContainer><ComposedChart data={methods}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="method" tick={{ fontSize: 11 }} /><YAxis tick={{ fontSize: 11 }} width={42} /><Tooltip content={<CustomTooltip />} /><Bar dataKey={paymentView === 'count' ? 'count' : 'amount'} fill={chartTheme.primary} radius={[8, 8, 0, 0]} /></ComposedChart></ResponsiveContainer>
           </ChartCard>
-          <ChartCard title="Top Failure Reasons" subtitle="Failure concentration prioritization">
+          <ChartCard title="Top Failure Reasons" subtitle="Primary drivers behind declines and checkout friction" whyItMatters="Concentrated failure reasons indicate where retry logic, routing, or issuer partnerships can deliver fastest gains.">
             <ResponsiveContainer><BarChart data={failures} layout="vertical"><XAxis type="number" /><YAxis dataKey="reason" type="category" width={120} /><Tooltip content={<CustomTooltip />} /><Bar dataKey="count" fill={chartTheme.failed} radius={[0, 8, 8, 0]} /></BarChart></ResponsiveContainer>
           </ChartCard>
-          <ChartCard title="Region-wise Performance" subtitle="Regional success/failure balance">
-            <ResponsiveContainer><BarChart data={regions}><XAxis dataKey="region" /><YAxis /><Tooltip content={<CustomTooltip />} /><Legend /><Bar dataKey="success" fill={chartTheme.success} radius={[6, 6, 0, 0]} /><Bar dataKey="failed" fill={chartTheme.failed} radius={[6, 6, 0, 0]} /></BarChart></ResponsiveContainer>
+          <ChartCard title="Regional Performance Balance" subtitle="Compare success and failure patterns by geography" whyItMatters="Regional variance often indicates localization, issuer mix, or gateway coverage gaps.">
+            <ResponsiveContainer><BarChart data={regions}><XAxis dataKey="region" tick={{ fontSize: 11 }} /><YAxis tick={{ fontSize: 11 }} width={42} /><Tooltip content={<CustomTooltip />} /><Legend verticalAlign="top" height={24} wrapperStyle={{ fontSize: 11 }} /><Bar dataKey="success" fill={chartTheme.success} radius={[6, 6, 0, 0]} /><Bar dataKey="failed" fill={chartTheme.failed} radius={[6, 6, 0, 0]} /></BarChart></ResponsiveContainer>
           </ChartCard>
         </div>
       </section>
 
       <section className="section-shell">
-        <SectionHeader title="Refunds & Settlements" subtitle="Post-transaction quality and payout efficiency." />
+        <SectionHeader title="Refunds & Settlements" subtitle="How post-payment quality and payout speed impact merchant trust and margin." />
         <div className="grid lg:grid-cols-3 gap-3 md:gap-4">
-          <ChartCard title="Refund Trend" subtitle="Daily refunded transaction count">
-            <ResponsiveContainer><LineChart data={daily}><XAxis dataKey="date" hide /><YAxis /><Tooltip content={<CustomTooltip />} /><Line dataKey="refunds" stroke="#6366f1" strokeWidth={2} dot={false} /></LineChart></ResponsiveContainer>
+          <ChartCard title="Refund Trend" subtitle="Daily refunded transaction count" whyItMatters="Sustained refund growth can signal product mismatch, operations friction, or policy abuse.">
+            <ResponsiveContainer><LineChart data={daily}><XAxis dataKey="date" hide /><YAxis tick={{ fontSize: 11 }} width={42} /><Tooltip content={<CustomTooltip />} /><Line dataKey="refunds" stroke="#6366f1" strokeWidth={2} dot={false} /></LineChart></ResponsiveContainer>
           </ChartCard>
-          <ChartCard title="Refund Rate by Payment Method" subtitle="Method-level refund propensity">
-            <ResponsiveContainer><BarChart data={refundByMethod}><XAxis dataKey="method" /><YAxis /><Tooltip content={<CustomTooltip />} /><Bar dataKey="refundRate" fill="#f97316" radius={[8, 8, 0, 0]} /></BarChart></ResponsiveContainer>
+          <ChartCard title="Refund Rate by Payment Method" subtitle="Method-level refund propensity" whyItMatters="Method-level outliers reveal where customer experience and policy controls should be tightened.">
+            <ResponsiveContainer><BarChart data={refundByMethod}><XAxis dataKey="method" tick={{ fontSize: 11 }} /><YAxis tick={{ fontSize: 11 }} width={42} /><Tooltip content={<CustomTooltip />} /><Bar dataKey="refundRate" fill="#f97316" radius={[8, 8, 0, 0]} /></BarChart></ResponsiveContainer>
           </ChartCard>
-          <ChartCard title="Settlement Delay Analysis" subtitle="Speed-of-settlement distribution">
+          <ChartCard title="Settlement Delay Analysis" subtitle="Speed-of-settlement distribution" whyItMatters="Delayed settlements increase merchant dissatisfaction and working-capital pressure.">
             <ResponsiveContainer><PieChart><Pie data={[
               { name: 'On-time (<=2d)', value: filtered.filter((t) => t.settlementDelayDays <= 2).length },
               { name: 'Moderate (3-4d)', value: filtered.filter((t) => t.settlementDelayDays > 2 && t.settlementDelayDays <= 4).length },
@@ -214,10 +215,10 @@ export default function Page() {
       </section>
 
       <section className="section-shell">
-        <SectionHeader title="Risk Monitoring" subtitle="Fraud-adjacent behavior signals and monitoring alerts." />
+        <SectionHeader title="Risk Monitoring" subtitle="Where risk pressure is rising and which segments need immediate review." />
         <div className="grid lg:grid-cols-3 gap-3 md:gap-4">
-          <ChartCard title="Flagged Transaction Trend" subtitle="Daily flagged pattern">
-            <ResponsiveContainer><LineChart data={daily}><XAxis dataKey="date" hide /><YAxis /><Tooltip content={<CustomTooltip />} /><Line dataKey="flagged" stroke={chartTheme.flagged} strokeWidth={2} dot={false} /></LineChart></ResponsiveContainer>
+          <ChartCard title="Flagged Transaction Trend" subtitle="Daily flagged pattern" whyItMatters="A rising flagged trend increases manual-review load and potential chargeback exposure.">
+            <ResponsiveContainer><LineChart data={daily}><XAxis dataKey="date" hide /><YAxis tick={{ fontSize: 11 }} width={42} /><Tooltip content={<CustomTooltip />} /><Line dataKey="flagged" stroke={chartTheme.flagged} strokeWidth={2} dot={false} /></LineChart></ResponsiveContainer>
           </ChartCard>
           <div className="card p-4 md:p-5">
             <h3 className="font-semibold mb-2">Suspicious Segment Highlights</h3>
@@ -244,13 +245,13 @@ export default function Page() {
       </section>
 
       <section className="section-shell">
-        <SectionHeader title="Forecast vs Actual" subtitle="Plan-vs-delivery view across volume and amount." />
+        <SectionHeader title="Forecast vs Actual" subtitle="Whether operational outcomes are tracking plan across throughput and dollar volume." />
         <div className="grid lg:grid-cols-3 gap-3 md:gap-4">
-          <ChartCard title="Forecast vs Actual Volume">
-            <ResponsiveContainer><BarChart data={[{ name: 'Volume', forecast: forecastSummary.forecastVolume, actual: forecastSummary.actualVolume }]}><XAxis dataKey="name" /><YAxis /><Tooltip content={<CustomTooltip />} /><Legend /><Bar dataKey="forecast" fill="#94a3b8" radius={[8, 8, 0, 0]} /><Bar dataKey="actual" fill={chartTheme.primary} radius={[8, 8, 0, 0]} /></BarChart></ResponsiveContainer>
+          <ChartCard title="Forecast vs Actual Volume" whyItMatters="Persistent underperformance vs forecast should trigger demand and funnel diagnostics.">
+            <ResponsiveContainer><BarChart data={[{ name: 'Volume', forecast: forecastSummary.forecastVolume, actual: forecastSummary.actualVolume }]}><XAxis dataKey="name" /><YAxis tick={{ fontSize: 11 }} width={42} /><Tooltip content={<CustomTooltip />} /><Legend verticalAlign="top" height={24} wrapperStyle={{ fontSize: 11 }} /><Bar dataKey="forecast" fill="#94a3b8" radius={[8, 8, 0, 0]} /><Bar dataKey="actual" fill={chartTheme.primary} radius={[8, 8, 0, 0]} /></BarChart></ResponsiveContainer>
           </ChartCard>
-          <ChartCard title="Forecast vs Actual Amount">
-            <ResponsiveContainer><BarChart data={[{ name: 'Amount', forecast: forecastSummary.forecastAmount, actual: forecastSummary.actualAmount }]}><XAxis dataKey="name" /><YAxis /><Tooltip content={<CustomTooltip />} /><Legend /><Bar dataKey="forecast" fill="#94a3b8" radius={[8, 8, 0, 0]} /><Bar dataKey="actual" fill="#0ea5e9" radius={[8, 8, 0, 0]} /></BarChart></ResponsiveContainer>
+          <ChartCard title="Forecast vs Actual Amount" whyItMatters="Amount variance helps separate volume shifts from transaction-value shifts.">
+            <ResponsiveContainer><BarChart data={[{ name: 'Amount', forecast: forecastSummary.forecastAmount, actual: forecastSummary.actualAmount }]}><XAxis dataKey="name" /><YAxis tick={{ fontSize: 11 }} width={42} /><Tooltip content={<CustomTooltip />} /><Legend verticalAlign="top" height={24} wrapperStyle={{ fontSize: 11 }} /><Bar dataKey="forecast" fill="#94a3b8" radius={[8, 8, 0, 0]} /><Bar dataKey="actual" fill="#0ea5e9" radius={[8, 8, 0, 0]} /></BarChart></ResponsiveContainer>
           </ChartCard>
           <div className="card p-4 md:p-5">
             <h3 className="font-semibold mb-2">Variance Explanation Panel</h3>
