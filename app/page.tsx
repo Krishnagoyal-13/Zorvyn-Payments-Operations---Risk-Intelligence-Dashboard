@@ -25,6 +25,7 @@ import {
   HeroSection,
   Legend,
   Line,
+  LineChart,
   MerchantTable,
   Pie,
   PieChart,
