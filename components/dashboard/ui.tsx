@@ -12,9 +12,9 @@ type OptionMap = {
 
 export function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
-    <div className="mb-4">
-      <h2 className="text-xl font-semibold text-slate-900">{title}</h2>
-      {subtitle ? <p className="text-sm text-slate-600 mt-1">{subtitle}</p> : null}
+    <div className="mb-1">
+      <h2 className="section-title">{title}</h2>
+      {subtitle ? <p className="section-subtitle">{subtitle}</p> : null}
     </div>
   );
 }
@@ -30,11 +30,12 @@ export function FilterBar({
 }) {
   const set = (key: keyof FilterState, value: string) => onChange({ ...filters, [key]: value });
 
-  const selectClass = 'rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700';
+  const selectClass =
+    'h-10 rounded-xl border border-slate-200 bg-slate-50/70 px-3 text-sm font-medium text-slate-700 outline-none transition focus:bg-white focus:ring-2 focus:ring-brand-100';
 
   return (
-    <section className="card p-4 sticky top-3 z-20">
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-3">
+    <section className="card p-4 md:p-5 sticky top-3 z-20">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-2.5 md:gap-3">
         <input className={selectClass} type="date" value={filters.startDate} onChange={(e) => set('startDate', e.target.value)} />
         <input className={selectClass} type="date" value={filters.endDate} onChange={(e) => set('endDate', e.target.value)} />
         <select className={selectClass} value={filters.region} onChange={(e) => set('region', e.target.value)}>
@@ -58,7 +59,7 @@ export function FilterBar({
           ))}
         </select>
         <button
-          className="rounded-xl bg-brand-500 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+          className="h-10 rounded-xl bg-brand-500 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700"
           onClick={() =>
             onChange({
               ...filters,
@@ -91,11 +92,11 @@ export function KPIGrid({ kpis }: { kpis: KPISet }) {
   ];
 
   return (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
+    <div className="grid sm:grid-cols-2 xl:grid-cols-5 gap-3">
       {items.map(([label, value]) => (
-        <div key={label} className="card p-4">
-          <p className="text-xs text-slate-500">{label}</p>
-          <p className="text-lg font-semibold text-slate-900 mt-1">{value}</p>
+        <div key={label} className="card p-4 md:p-5">
+          <p className="text-[11px] uppercase tracking-wide text-slate-500 font-medium">{label}</p>
+          <p className="text-2xl font-semibold tracking-tight text-slate-900 mt-2">{value}</p>
         </div>
       ))}
     </div>

@@ -109,20 +109,20 @@ export default function Page() {
   ];
 
   return (
-    <main className="max-w-7xl mx-auto p-4 md:p-6 space-y-5">
+    <main className="max-w-[1320px] mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-7">
       <HeroSection />
       <FilterBar filters={filters} options={filterOptions} onChange={setFilters} />
 
       <DataQualitySection summary={cleanedOutput.summary} rawSample={cleanedOutput.rawSample} cleanedSample={cleanedOutput.cleanedSample} />
 
-      <section>
+      <section className="section-shell">
         <SectionHeader title="KPI Overview" subtitle="Core payments operations and risk intelligence indicators." />
         <KPIGrid kpis={kpis} />
       </section>
 
-      <section className="space-y-3">
+      <section className="section-shell">
         <SectionHeader title="Transaction Performance" />
-        <div className="grid lg:grid-cols-2 gap-3">
+        <div className="grid lg:grid-cols-2 gap-3 md:gap-4">
           <ChartCard title="Daily Transaction Volume Trend">
             <ResponsiveContainer><LineChart data={daily}><CartesianGrid strokeDasharray="3 3" /><XAxis dataKey="date" hide /><YAxis /><Tooltip /><Line dataKey="volume" stroke={chartTheme.primary} strokeWidth={2} /></LineChart></ResponsiveContainer>
           </ChartCard>
@@ -141,9 +141,9 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="space-y-3">
+      <section className="section-shell">
         <SectionHeader title="Refunds & Settlements" />
-        <div className="grid lg:grid-cols-3 gap-3">
+        <div className="grid lg:grid-cols-3 gap-3 md:gap-4">
           <ChartCard title="Refund Trend">
             <ResponsiveContainer><LineChart data={daily}><XAxis dataKey="date" hide /><YAxis /><Tooltip /><Line dataKey="refunds" stroke="#6366f1" /></LineChart></ResponsiveContainer>
           </ChartCard>
@@ -161,13 +161,13 @@ export default function Page() {
         <DelayedMerchantsTable delayed={delayedMerchants} />
       </section>
 
-      <section className="space-y-3">
+      <section className="section-shell">
         <SectionHeader title="Risk Monitoring" />
-        <div className="grid lg:grid-cols-3 gap-3">
+        <div className="grid lg:grid-cols-3 gap-3 md:gap-4">
           <ChartCard title="Flagged Transaction Trend">
             <ResponsiveContainer><LineChart data={daily}><XAxis dataKey="date" hide /><YAxis /><Tooltip /><Line dataKey="flagged" stroke={chartTheme.flagged} strokeWidth={2} /></LineChart></ResponsiveContainer>
           </ChartCard>
-          <div className="card p-4">
+          <div className="card p-4 md:p-5">
             <h3 className="font-semibold mb-2">Suspicious Segment Highlights</h3>
             <div className="space-y-2">
               {suspiciousSegments.map((s) => (
@@ -186,21 +186,21 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="space-y-3">
+      <section className="section-shell">
         <SectionHeader title="Merchant Performance" />
         <MerchantTable merchants={merchants} />
       </section>
 
-      <section className="space-y-3">
+      <section className="section-shell">
         <SectionHeader title="Forecast vs Actual" />
-        <div className="grid lg:grid-cols-3 gap-3">
+        <div className="grid lg:grid-cols-3 gap-3 md:gap-4">
           <ChartCard title="Forecast vs Actual Volume">
             <ResponsiveContainer><BarChart data={[{ name: 'Volume', forecast: forecastSummary.forecastVolume, actual: forecastSummary.actualVolume }]}><XAxis dataKey="name" /><YAxis /><Tooltip /><Legend /><Bar dataKey="forecast" fill="#94a3b8" /><Bar dataKey="actual" fill={chartTheme.primary} /></BarChart></ResponsiveContainer>
           </ChartCard>
           <ChartCard title="Forecast vs Actual Amount">
             <ResponsiveContainer><BarChart data={[{ name: 'Amount', forecast: forecastSummary.forecastAmount, actual: forecastSummary.actualAmount }]}><XAxis dataKey="name" /><YAxis /><Tooltip /><Legend /><Bar dataKey="forecast" fill="#94a3b8" /><Bar dataKey="actual" fill="#0ea5e9" /></BarChart></ResponsiveContainer>
           </ChartCard>
-          <div className="card p-4">
+          <div className="card p-4 md:p-5">
             <h3 className="font-semibold mb-2">Variance Explanation Panel</h3>
             <p className="text-sm text-slate-600">Volume variance: <span className="font-semibold">{variancePercent(forecastSummary.actualVolume, forecastSummary.forecastVolume).toFixed(1)}%</span></p>
             <p className="text-sm text-slate-600">Amount variance: <span className="font-semibold">{variancePercent(forecastSummary.actualAmount, forecastSummary.forecastAmount).toFixed(1)}%</span></p>
@@ -209,7 +209,7 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="card p-5">
+      <section className="section-card">
         <SectionHeader title="Key Insights & Recommended Actions" />
         <div className="grid lg:grid-cols-3 gap-4 text-sm">
           <div>
@@ -227,7 +227,7 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="card p-5">
+      <section className="section-card">
         <SectionHeader title="Methodology & Metric Definitions" />
         <div className="grid md:grid-cols-2 gap-3 text-sm text-slate-700">
           <p><strong>Success Rate</strong> = Successful transactions / Total transactions. <strong>Refund Rate</strong> = Refunded transactions / Total transactions.</p>
