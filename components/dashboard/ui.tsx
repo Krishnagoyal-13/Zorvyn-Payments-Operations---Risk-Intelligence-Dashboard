@@ -2,6 +2,7 @@
 
 import { FilterState, KPISet } from '@/types/payments';
 import { formatCurrency } from '@/lib/aggregations';
+import { StatusBadge, StatusTone } from './design-system';
 
 type OptionMap = {
   regions: string[];
@@ -9,8 +10,6 @@ type OptionMap = {
   segments: string[];
   statuses: string[];
 };
-
-type Tone = 'positive' | 'warning' | 'risk' | 'neutral';
 
 export function SectionHeader({ title, subtitle }: { title: string; subtitle?: string }) {
   return (
@@ -79,20 +78,13 @@ export function FilterBar({
   );
 }
 
-const toneClasses: Record<Tone, string> = {
-  positive: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  warning: 'bg-amber-50 text-amber-700 border-amber-200',
-  risk: 'bg-rose-50 text-rose-700 border-rose-200',
-  neutral: 'bg-slate-100 text-slate-700 border-slate-200'
-};
-
-function Sparkline({ tone, seed }: { tone: Tone; seed: number }) {
+function Sparkline({ tone, seed }: { tone: StatusTone; seed: number }) {
   const bars = Array.from({ length: 8 }).map((_, idx) => {
     const base = ((seed + idx * 13) % 65) + 25;
     return Math.max(18, Math.min(100, base));
   });
 
-  const barClass = tone === 'positive' ? 'bg-emerald-400/70' : tone === 'warning' ? 'bg-amber-400/75' : tone === 'risk' ? 'bg-rose-400/75' : 'bg-slate-400/70';
+  const barClass = tone === 'success' ? 'bg-emerald-400/70' : tone === 'warning' ? 'bg-amber-400/75' : tone === 'risk' ? 'bg-rose-400/75' : tone === 'info' ? 'bg-sky-400/75' : 'bg-slate-400/70';
 
   return (
     <div className="flex items-end gap-1 h-8">
@@ -111,7 +103,7 @@ export function KPIGrid({ kpis }: { kpis: KPISet }) {
       value: kpis.totalTransactions.toLocaleString(),
       helper: 'Processed in selected period',
       trend: `${kpis.weekOverWeekChange >= 0 ? '▲' : '▼'} ${Math.abs(kpis.weekOverWeekChange).toFixed(1)}% vs prior week`,
-      tone: (kpis.weekOverWeekChange >= 0 ? 'positive' : 'warning') as Tone
+      tone: (kpis.weekOverWeekChange >= 0 ? 'success' : 'warning') as StatusTone
     },
     {
       label: 'Successful Transactions',
@@ -119,7 +111,7 @@ export function KPIGrid({ kpis }: { kpis: KPISet }) {
       value: kpis.successfulTransactions.toLocaleString(),
       helper: 'Approved by gateway/acquirer',
       trend: kpis.paymentSuccessRate > 92 ? 'Strong quality band' : 'Needs reliability improvement',
-      tone: (kpis.paymentSuccessRate > 92 ? 'positive' : 'warning') as Tone
+      tone: (kpis.paymentSuccessRate > 92 ? 'success' : 'warning') as StatusTone
     },
     {
       label: 'Failed Transactions',
@@ -127,7 +119,7 @@ export function KPIGrid({ kpis }: { kpis: KPISet }) {
       value: kpis.failedTransactions.toLocaleString(),
       helper: 'Declined, timeout, or processing errors',
       trend: kpis.failedTransactions < kpis.successfulTransactions * 0.1 ? 'Contained failure volume' : 'Failure escalation watch',
-      tone: (kpis.failedTransactions < kpis.successfulTransactions * 0.1 ? 'warning' : 'risk') as Tone
+      tone: (kpis.failedTransactions < kpis.successfulTransactions * 0.1 ? 'warning' : 'risk') as StatusTone
     },
     {
       label: 'Payment Success Rate',
@@ -135,7 +127,7 @@ export function KPIGrid({ kpis }: { kpis: KPISet }) {
       value: `${kpis.paymentSuccessRate.toFixed(1)}%`,
       helper: 'Success / total transactions',
       trend: kpis.paymentSuccessRate >= 95 ? 'Excellent conversion stability' : 'Opportunity in checkout routing',
-      tone: (kpis.paymentSuccessRate >= 95 ? 'positive' : 'warning') as Tone
+      tone: (kpis.paymentSuccessRate >= 95 ? 'success' : 'warning') as StatusTone
     },
     {
       label: 'Refund Rate',
@@ -143,7 +135,7 @@ export function KPIGrid({ kpis }: { kpis: KPISet }) {
       value: `${kpis.refundRate.toFixed(1)}%`,
       helper: 'Refunded / total transactions',
       trend: kpis.refundRate <= 8 ? 'Within control threshold' : 'Margin pressure risk',
-      tone: (kpis.refundRate <= 8 ? 'positive' : 'risk') as Tone
+      tone: (kpis.refundRate <= 8 ? 'success' : 'risk') as StatusTone
     },
     {
       label: 'Average Settlement Time',
@@ -151,7 +143,7 @@ export function KPIGrid({ kpis }: { kpis: KPISet }) {
       value: `${kpis.averageSettlementTime.toFixed(2)}d`,
       helper: 'Average payout lag',
       trend: kpis.averageSettlementTime <= 2.5 ? 'Fast settlement cycle' : 'SLA attention needed',
-      tone: (kpis.averageSettlementTime <= 2.5 ? 'positive' : 'warning') as Tone
+      tone: (kpis.averageSettlementTime <= 2.5 ? 'success' : 'warning') as StatusTone
     },
     {
       label: 'Total Processed Amount',
@@ -159,7 +151,7 @@ export function KPIGrid({ kpis }: { kpis: KPISet }) {
       value: formatCurrency(kpis.totalProcessedAmount),
       helper: 'Gross payment volume (GPV)',
       trend: 'Healthy transaction throughput',
-      tone: 'positive' as Tone
+      tone: 'info' as StatusTone
     },
     {
       label: 'Flagged Transactions',
@@ -167,7 +159,7 @@ export function KPIGrid({ kpis }: { kpis: KPISet }) {
       value: kpis.flaggedTransactions.toLocaleString(),
       helper: 'Risk or policy-triggered reviews',
       trend: kpis.flaggedTransactions / Math.max(kpis.totalTransactions, 1) < 0.12 ? 'Monitoring within band' : 'Fraud alert density rising',
-      tone: (kpis.flaggedTransactions / Math.max(kpis.totalTransactions, 1) < 0.12 ? 'warning' : 'risk') as Tone
+      tone: (kpis.flaggedTransactions / Math.max(kpis.totalTransactions, 1) < 0.12 ? 'warning' : 'risk') as StatusTone
     },
     {
       label: 'Net Revenue Impact',
@@ -175,7 +167,7 @@ export function KPIGrid({ kpis }: { kpis: KPISet }) {
       value: formatCurrency(kpis.netRevenueImpact),
       helper: 'Amount minus refunds',
       trend: kpis.netRevenueImpact > 0 ? 'Positive contribution margin' : 'Negative impact risk',
-      tone: (kpis.netRevenueImpact > 0 ? 'positive' : 'risk') as Tone
+      tone: (kpis.netRevenueImpact > 0 ? 'success' : 'risk') as StatusTone
     },
     {
       label: 'Week-over-Week Change',
@@ -183,7 +175,7 @@ export function KPIGrid({ kpis }: { kpis: KPISet }) {
       value: `${kpis.weekOverWeekChange.toFixed(1)}%`,
       helper: 'Current week vs previous week volume',
       trend: kpis.weekOverWeekChange >= 0 ? 'Acceleration in throughput' : 'Demand softness observed',
-      tone: (kpis.weekOverWeekChange >= 0 ? 'positive' : 'warning') as Tone
+      tone: (kpis.weekOverWeekChange >= 0 ? 'success' : 'warning') as StatusTone
     }
   ];
 
@@ -206,9 +198,9 @@ export function KPIGrid({ kpis }: { kpis: KPISet }) {
           </div>
 
           <div className="relative mt-3 flex items-center justify-between gap-2">
-            <span className={`inline-flex items-center rounded-full border px-2 py-1 text-[11px] font-medium ${toneClasses[item.tone]}`}>
-              {item.tone === 'positive' ? 'Positive' : item.tone === 'warning' ? 'Watch' : item.tone === 'risk' ? 'Risk' : 'Neutral'}
-            </span>
+            <StatusBadge tone={item.tone}>
+              {item.tone === 'success' ? 'Healthy' : item.tone === 'warning' ? 'Watch' : item.tone === 'risk' ? 'Risk' : item.tone === 'info' ? 'Info' : 'Neutral'}
+            </StatusBadge>
             <p className="text-[11px] text-slate-600 text-right">{item.trend}</p>
           </div>
         </div>

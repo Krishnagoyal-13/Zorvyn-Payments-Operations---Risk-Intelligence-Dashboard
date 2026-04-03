@@ -57,6 +57,11 @@ export interface CleaningSummary {
   missingValuesFilled: number;
   labelsStandardized: number;
   invalidDatesCorrected: number;
+  recordsExcluded: number;
+  recordsMarkedUncertain: number;
+  recordsCorrected: number;
+  trustScore: number;
+  assumptions: string[];
 }
 
 export interface FilterState {

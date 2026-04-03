@@ -61,6 +61,7 @@ export function cleanTransactions(raw: RawTransaction[]): {
   let missingValuesFilled = 0;
   let labelsStandardized = 0;
   let invalidDatesCorrected = 0;
+  let recordsMarkedUncertain = 0;
 
   const cleaned: CleanTransaction[] = [];
 
@@ -86,11 +87,16 @@ export function cleanTransactions(raw: RawTransaction[]): {
     if (transactionDate !== row.transaction_date?.slice(0, 10)) invalidDatesCorrected += 1;
 
     const settlementDate = parseDate(row.settlement_date, transactionDate);
+    const usedFallbackDate = !row.transaction_date || transactionDate === '2026-01-02' || !row.settlement_date;
 
     const status = normalizeStatus(row.transaction_status);
     const refundStatus = normalizeRefund(row.refund_status);
 
     if (refundStatus === 'none' && (row.refund_amount ?? 0) > 0) missingValuesFilled += 1;
+
+    if (usedFallbackDate || (status === 'failed' && !row.failure_reason?.trim()) || (!row.merchant_segment?.trim())) {
+      recordsMarkedUncertain += 1;
+    }
 
     cleaned.push({
       transactionId: row.transaction_id,
@@ -125,7 +131,17 @@ export function cleanTransactions(raw: RawTransaction[]): {
       duplicatesRemoved,
       missingValuesFilled,
       labelsStandardized,
-      invalidDatesCorrected
+      invalidDatesCorrected,
+      recordsExcluded: duplicatesRemoved,
+      recordsMarkedUncertain,
+      recordsCorrected: labelsStandardized + invalidDatesCorrected + missingValuesFilled,
+      trustScore: Math.max(0, Math.min(100, 100 - ((recordsMarkedUncertain + duplicatesRemoved) / Math.max(raw.length, 1)) * 100)),
+      assumptions: [
+        'Fallback date 2026-01-02 used when transaction date was invalid or missing.',
+        'Blank merchant segment values were mapped to Uncategorized.',
+        'Unknown failed transactions without reason were tagged as Unspecified Failure.',
+        'Settlement date defaults to transaction date when missing.'
+      ]
     },
     rawSample: raw.slice(0, 8),
     cleanedSample: cleaned.slice(0, 8)

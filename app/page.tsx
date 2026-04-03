@@ -8,6 +8,7 @@ import { byFailureReason, byPaymentMethod, byRegion, groupByDay, merchantPerform
 import { buildInsights } from '@/lib/insights';
 import { FilterState } from '@/types/payments';
 import { FilterBar, KPIGrid, SectionHeader } from '@/components/dashboard/ui';
+import { InsightCard, SectionContainer, StatusBadge } from '@/components/dashboard/design-system';
 import {
   AlertsPanel,
   Area,
@@ -221,7 +222,7 @@ export default function Page() {
             <ResponsiveContainer><LineChart data={daily}><XAxis dataKey="date" hide /><YAxis tick={{ fontSize: 11 }} width={42} /><Tooltip content={<CustomTooltip />} /><Line dataKey="flagged" stroke={chartTheme.flagged} strokeWidth={2} dot={false} /></LineChart></ResponsiveContainer>
           </ChartCard>
           <div className="card p-4 md:p-5">
-            <h3 className="font-semibold mb-2">Suspicious Segment Highlights</h3>
+            <div className="flex items-center justify-between mb-2"><h3 className="font-semibold">Suspicious Segment Highlights</h3><StatusBadge tone="risk">Risk Signal</StatusBadge></div>
             <div className="space-y-2">
               {suspiciousSegments.map((s) => (
                 <div key={s.segment} className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800 flex justify-between">
@@ -230,9 +231,9 @@ export default function Page() {
               ))}
             </div>
             <div className="mt-3 flex flex-wrap gap-2 text-xs">
-              <span className="px-2 py-1 bg-rose-100 text-rose-700 rounded-full">Anomaly: Risk score spikes</span>
-              <span className="px-2 py-1 bg-amber-100 text-amber-700 rounded-full">Anomaly: Refund cluster</span>
-              <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full">Anomaly: Geo mismatch</span>
+              <StatusBadge tone="risk">Anomaly: Risk score spikes</StatusBadge>
+              <StatusBadge tone="warning">Anomaly: Refund cluster</StatusBadge>
+              <StatusBadge tone="info">Anomaly: Geo mismatch</StatusBadge>
             </div>
           </div>
           <AlertsPanel alerts={alerts} />
@@ -262,25 +263,31 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="section-card">
+      <SectionContainer>
         <SectionHeader title="Key Insights & Recommended Actions" subtitle="Narrative synthesized from the currently filtered scope." />
-        <div className="grid lg:grid-cols-3 gap-4 text-sm">
-          <div>
-            <h3 className="font-semibold mb-2">Key Insights</h3>
-            <ul className="space-y-2 list-disc ml-5 text-slate-700">{insights.insights.map((i) => <li key={i}>{i}</li>)}</ul>
+        <div className="grid lg:grid-cols-3 gap-4">
+          <div className="space-y-2">
+            <h3 className="font-semibold text-sm text-slate-800">Key Insights</h3>
+            {insights.insights.map((item) => (
+              <InsightCard key={item} title="Observation" tone="info">{item}</InsightCard>
+            ))}
           </div>
-          <div>
-            <h3 className="font-semibold mb-2">Business Risks</h3>
-            <ul className="space-y-2 list-disc ml-5 text-slate-700">{insights.risks.map((i) => <li key={i}>{i}</li>)}</ul>
+          <div className="space-y-2">
+            <h3 className="font-semibold text-sm text-slate-800">Business Risks</h3>
+            {insights.risks.map((item) => (
+              <InsightCard key={item} title="Risk" tone="risk">{item}</InsightCard>
+            ))}
           </div>
-          <div>
-            <h3 className="font-semibold mb-2">Recommended Actions</h3>
-            <ul className="space-y-2 list-disc ml-5 text-slate-700">{insights.actions.map((i) => <li key={i}>{i}</li>)}</ul>
+          <div className="space-y-2">
+            <h3 className="font-semibold text-sm text-slate-800">Recommended Actions</h3>
+            {insights.actions.map((item) => (
+              <InsightCard key={item} title="Action" tone="success">{item}</InsightCard>
+            ))}
           </div>
         </div>
-      </section>
+      </SectionContainer>
 
-      <section className="section-card">
+      <SectionContainer>
         <SectionHeader title="Methodology & Metric Definitions" subtitle="Transparent metric formulas used for this dashboard." />
         <div className="grid md:grid-cols-2 gap-3 text-sm text-slate-700">
           <p><strong>Success Rate</strong> = Successful transactions / Total transactions. <strong>Refund Rate</strong> = Refunded transactions / Total transactions.</p>
@@ -288,7 +295,7 @@ export default function Page() {
           <p><strong>Merchant Health Score</strong> combines success, refund, and risk rates into a 0-100 composite.</p>
           <p><strong>Net Revenue Impact</strong> = Sum(transaction amount - refund amount). <strong>WoW Change</strong> compares latest 7 days to prior 7 days.</p>
         </div>
-      </section>
+      </SectionContainer>
     </main>
   );
 }
