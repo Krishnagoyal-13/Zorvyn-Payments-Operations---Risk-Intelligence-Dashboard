@@ -6,9 +6,10 @@ import { cleanTransactions } from '@/lib/cleaning';
 import { buildKPISet, variancePercent } from '@/lib/metrics';
 import { byFailureReason, byPaymentMethod, byRegion, groupByDay, merchantPerformance } from '@/lib/aggregations';
 import { buildInsights } from '@/lib/insights';
+import { buildExecutiveBrief } from '@/lib/executive';
 import { FilterState } from '@/types/payments';
 import { FilterBar, KPIGrid, SectionHeader } from '@/components/dashboard/ui';
-import { InsightCard, SectionContainer, StatusBadge } from '@/components/dashboard/design-system';
+import { ExecutiveCard, InsightCard, SectionContainer, StatusBadge } from '@/components/dashboard/design-system';
 import {
   AlertsPanel,
   Area,
@@ -83,6 +84,7 @@ export default function Page() {
   const regions = useMemo(() => byRegion(filtered), [filtered]);
   const merchants = useMemo(() => merchantPerformance(filtered), [filtered]);
   const insights = useMemo(() => buildInsights(filtered), [filtered]);
+  const executive = useMemo(() => buildExecutiveBrief(filtered), [filtered]);
 
   const refundByMethod = methods.map((m) => ({ method: m.method, refundRate: m.count ? (m.refunds / m.count) * 100 : 0 }));
 
@@ -124,6 +126,49 @@ export default function Page() {
     <main className="max-w-[1360px] mx-auto px-4 md:px-8 py-6 md:py-8 space-y-6 md:space-y-7">
       <HeroSection />
       <FilterBar filters={filters} options={filterOptions} onChange={setFilters} />
+
+      <SectionContainer>
+        <SectionHeader title="Executive Briefing" subtitle="Leadership-oriented summary with explicit separation of observed facts, interpretation, and recommended next actions." />
+        <div className="grid lg:grid-cols-3 gap-3">
+          {executive.observations.map((item) => (
+            <ExecutiveCard
+              key={`obs-${item.title}`}
+              label={`Observation · ${item.title}`}
+              tone="info"
+              fact={item.fact}
+              interpretation={item.interpretation}
+              recommendation={item.recommendation}
+              confidence={item.confidence}
+            />
+          ))}
+        </div>
+        <div className="grid lg:grid-cols-2 gap-3 mt-3">
+          {executive.risks.map((item) => (
+            <ExecutiveCard
+              key={`risk-${item.title}`}
+              label={`Operational Risk · ${item.title}`}
+              tone="risk"
+              fact={item.fact}
+              interpretation={item.interpretation}
+              recommendation={item.recommendation}
+              confidence={item.confidence}
+            />
+          ))}
+        </div>
+        <div className="grid lg:grid-cols-3 gap-3 mt-3">
+          {executive.actions.map((item, index) => (
+            <ExecutiveCard
+              key={`action-${item.title}-${index}`}
+              label={`Recommended Action ${index + 1}`}
+              tone="success"
+              fact={item.fact}
+              interpretation={item.interpretation}
+              recommendation={item.recommendation}
+              confidence={item.confidence}
+            />
+          ))}
+        </div>
+      </SectionContainer>
 
       <DataQualitySection summary={cleanedOutput.summary} rawSample={cleanedOutput.rawSample} cleanedSample={cleanedOutput.cleanedSample} />
 

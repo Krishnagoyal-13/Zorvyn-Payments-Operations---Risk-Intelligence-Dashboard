@@ -63,3 +63,32 @@ export function InsightCard({
     </div>
   );
 }
+
+
+export function ExecutiveCard({
+  label,
+  tone,
+  fact,
+  interpretation,
+  recommendation,
+  confidence
+}: {
+  label: string;
+  tone: StatusTone;
+  fact: string;
+  interpretation: string;
+  recommendation: string;
+  confidence: 'High' | 'Medium';
+}) {
+  return (
+    <div className="rounded-xl border border-slate-700 bg-slate-900/70 p-4 space-y-2">
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-sm font-semibold text-slate-100">{label}</p>
+        <StatusBadge tone={tone}>Confidence: {confidence}</StatusBadge>
+      </div>
+      <p className="text-xs text-slate-300 leading-relaxed">{fact}</p>
+      <p className="text-xs text-slate-400 leading-relaxed">{interpretation}</p>
+      <p className="text-xs text-slate-200 leading-relaxed">{recommendation}</p>
+    </div>
+  );
+}
